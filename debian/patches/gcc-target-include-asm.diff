@@ -2,7 +2,7 @@
 
 --- a/src/configure.ac
 +++ b/src/configure.ac
-@@ -3857,7 +3857,7 @@ if test -d ${srcdir}/gcc; then
+@@ -3977,7 +3977,7 @@ if test -d ${srcdir}/gcc; then
    fi
  
    # Search for pre-installed headers if nothing else fits.

@@ -157,6 +157,14 @@ else
 	dh_installdocs -p$(p_snap)
 endif
 
+ifneq (,$(wildcard usage-*.svg))
+	cp usage-*.svg $(d_snap)/$(docdir)/$(p_snap)/.
+	-if which xz 2>&1 >/dev/null; then \
+	  echo -n $(d_snap)/$(docdir)/$(p_snap)/*.svg \
+	    | xargs -d ' ' -L 1 -P $(USE_CPUS)	xz -9v; \
+	fi
+endif
+
 	if [ -f $(buildlibdir)/libstdc++-v3/testsuite/current_symbols.txt ]; \
 	then \
 	  cp -p $(buildlibdir)/libstdc++-v3/testsuite/current_symbols.txt \
@@ -186,7 +194,9 @@ endif
 
 	( \
 	  echo 'libgcc_s $(GCC_SONAME) ${p_snap} (>= $(DEB_EVERSION))'; \
+	  echo 'libstdc++ $(CXX_SONAME) ${p_snap} (>= $(DEB_EVERSION))'; \
 	  echo 'libobjc $(OBJC_SONAME) ${p_snap} (>= $(DEB_EVERSION))'; \
+	  echo 'libgdiagnostics $(DIAGNOSTICS_SONAME) ${p_snap} (>= $(DEB_EVERSION))'; \
 	  echo 'libgfortran $(FORTRAN_SONAME) ${p_snap} (>= $(DEB_EVERSION))'; \
 	  echo 'libgo $(GO_SONAME) ${p_snap} (>= $(DEB_EVERSION))'; \
 	  echo 'libgomp $(GOMP_SONAME) ${p_snap} (>= $(DEB_EVERSION))'; \

@@ -2,7 +2,7 @@
 
 --- a/src/config-ml.in
 +++ b/src/config-ml.in
-@@ -492,6 +492,17 @@ esac
+@@ -509,6 +509,17 @@ fi
  # Tests like `if [ -n "$multidirs" ]' require it.
  multidirs=`echo "$multidirs" | sed -e 's/^[ ][ ]*//' -e 's/[ ][ ]*$//' -e 's/[ ][ ]*/ /g'`
  

@@ -3,9 +3,9 @@
 
 --- a/src/config-ml.in
 +++ b/src/config-ml.in
-@@ -488,6 +488,25 @@ powerpc*-*-* | rs6000*-*-*)
- 	;;
- esac
+@@ -505,6 +505,25 @@ if [ x$with_multi_buildlist != x ]; then
+   done
+ fi
  
 +if [ -z "$biarch_multidir_names" ]; then
 +  biarch_multidir_names="libiberty libstdc++-v3 libgfortran libmudflap libssp libffi libobjc libgomp"
@@ -29,7 +29,7 @@
  # Remove extraneous blanks from multidirs.
  # Tests like `if [ -n "$multidirs" ]' require it.
  multidirs=`echo "$multidirs" | sed -e 's/^[ ][ ]*//' -e 's/[ ][ ]*$//' -e 's/[ ][ ]*/ /g'`
-@@ -903,9 +922,19 @@ if [ -n "${multidirs}" ] && [ -z "${ml_n
+@@ -946,9 +965,19 @@ if [ -n "${multidirs}" ] && [ -z "${ml_n
  	fi
      fi
  

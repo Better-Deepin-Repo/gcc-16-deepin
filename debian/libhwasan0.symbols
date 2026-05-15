@@ -28,6 +28,11 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  ___interceptor_calloc@Base 14
  ___interceptor_cfree@Base 14
  ___interceptor_free@Base 14
+ ___interceptor_frexpf@Base 16
+ ___interceptor_frexpl@Base 16
+ ___interceptor_getservbyname_r@Base 16
+ ___interceptor_getservbyport_r@Base 16
+ ___interceptor_getservent_r@Base 16
  ___interceptor_longjmp@Base 14
  ___interceptor_mallinfo@Base 14
  ___interceptor_malloc@Base 14
@@ -185,6 +190,11 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  __hwasan_tls@Base 13
  __interceptor___libc_longjmp@Base 13
  __interceptor_bcmp@Base 14
+ __interceptor_frexpf@Base 16
+ __interceptor_frexpl@Base 16
+ __interceptor_getservbyname_r@Base 16
+ __interceptor_getservbyport_r@Base 16
+ __interceptor_getservent_r@Base 16
  __interceptor_longjmp@Base 13
  __interceptor_memcmp@Base 14
  __interceptor_memcpy@Base 14
@@ -206,6 +216,11 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  __interceptor_sigsetjmp@Base 13
  __interceptor_trampoline___libc_longjmp@Base 14
  __interceptor_trampoline_bcmp@Base 14
+ __interceptor_trampoline_frexpf@Base 16
+ __interceptor_trampoline_frexpl@Base 16
+ __interceptor_trampoline_getservbyname_r@Base 16
+ __interceptor_trampoline_getservbyport_r@Base 16
+ __interceptor_trampoline_getservent_r@Base 16
  __interceptor_trampoline_longjmp@Base 14
  __interceptor_trampoline_memcmp@Base 14
  __interceptor_trampoline_memcpy@Base 14
@@ -277,6 +292,7 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  __sanitizer_cov_trace_switch@Base 13
  __sanitizer_dump_coverage@Base 13
  __sanitizer_dump_trace_pc_guard_coverage@Base 13
+ __sanitizer_finish_switch_fiber@Base 16
  __sanitizer_free@Base 13
  __sanitizer_free_hook@Base 13
  __sanitizer_get_allocated_begin@Base 14
@@ -315,6 +331,7 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  __sanitizer_set_death_callback@Base 13
  __sanitizer_set_report_fd@Base 13
  __sanitizer_set_report_path@Base 13
+ __sanitizer_start_switch_fiber@Base 16
  __sanitizer_symbolize_global@Base 13
  __sanitizer_symbolize_pc@Base 13
  __sanitizer_syscall_post_impl_accept4@Base 14
@@ -340,6 +357,7 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  __sanitizer_syscall_post_impl_clock_settime@Base 14
  __sanitizer_syscall_post_impl_close@Base 14
  __sanitizer_syscall_post_impl_connect@Base 14
+ __sanitizer_syscall_post_impl_copy_file_range@Base 16
  __sanitizer_syscall_post_impl_creat@Base 14
  __sanitizer_syscall_post_impl_delete_module@Base 14
  __sanitizer_syscall_post_impl_dup2@Base 14
@@ -488,6 +506,7 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  __sanitizer_syscall_post_impl_olduname@Base 14
  __sanitizer_syscall_post_impl_open@Base 14
  __sanitizer_syscall_post_impl_open_by_handle_at@Base 14
+ __sanitizer_syscall_post_impl_openat2@Base 16
  __sanitizer_syscall_post_impl_openat@Base 14
  __sanitizer_syscall_post_impl_pause@Base 14
  __sanitizer_syscall_post_impl_pciconfig_iobase@Base 14
@@ -667,6 +686,7 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  __sanitizer_syscall_pre_impl_clock_settime@Base 14
  __sanitizer_syscall_pre_impl_close@Base 14
  __sanitizer_syscall_pre_impl_connect@Base 14
+ __sanitizer_syscall_pre_impl_copy_file_range@Base 16
  __sanitizer_syscall_pre_impl_creat@Base 14
  __sanitizer_syscall_pre_impl_delete_module@Base 14
  __sanitizer_syscall_pre_impl_dup2@Base 14
@@ -815,6 +835,7 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  __sanitizer_syscall_pre_impl_olduname@Base 14
  __sanitizer_syscall_pre_impl_open@Base 14
  __sanitizer_syscall_pre_impl_open_by_handle_at@Base 14
+ __sanitizer_syscall_pre_impl_openat2@Base 16
  __sanitizer_syscall_pre_impl_openat@Base 14
  __sanitizer_syscall_pre_impl_pause@Base 14
  __sanitizer_syscall_pre_impl_pciconfig_iobase@Base 14
@@ -985,6 +1006,11 @@ libhwasan.so.0 #PACKAGE# #MINVER#
  calloc@Base 13
  cfree@Base 13
  free@Base 13
+ frexpf@Base 16
+ frexpl@Base 16
+ getservbyname_r@Base 16
+ getservbyport_r@Base 16
+ getservent_r@Base 16
  longjmp@Base 13
  mallinfo@Base 13
  malloc@Base 13

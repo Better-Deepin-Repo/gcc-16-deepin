@@ -7,3 +7,6 @@ weak-library-dev-dependency
 
 # yes, still generating the series file for the build
 patch-file-present-but-not-mentioned-in-series
+
+# lintian is so wrong ...
+field-too-long

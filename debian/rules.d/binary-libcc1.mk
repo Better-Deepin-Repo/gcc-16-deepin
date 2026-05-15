@@ -24,8 +24,8 @@ $(binary_stamp)-libcc1: $(install_dependencies)
 	debian/dh_rmemptydirs -p$(p_cc1)
 
 	dh_strip -p$(p_cc1)
-	dh_makeshlibs -p$(p_cc1)
-	dh_shlibdeps -p$(p_cc1)
+	$(cross_makeshlibs)dh_makeshlibs -p$(p_cc1)
+	$(if $(ignshld),$(ignshld),-)dh_shlibdeps -p$(p_cc1)
 	echo $(p_cc1) >> debian/arch_binaries
 
 	trap '' 1 2 3 15; touch $@; mv $(install_stamp)-tmp $(install_stamp)

@@ -14,7 +14,7 @@
  # Where our data files go
 --- a/src/libgfortran/Makefile.in
 +++ b/src/libgfortran/Makefile.in
-@@ -967,7 +967,7 @@ gcc_version := $(shell @get_gcc_base_ver
+@@ -976,7 +976,7 @@ gcc_version := $(shell @get_gcc_base_ver
  extra_darwin_ldflags_libgfortran = @extra_ldflags_libgfortran@ \
  	$(am__append_1)
  gfor_c_HEADERS = ISO_Fortran_binding.h
@@ -23,16 +23,19 @@
  LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS)) \
  	    $(lt_host_flags)
  
-@@ -982,12 +982,12 @@ libgfortran_la_LDFLAGS = -version-info `
- 
- libgfortran_la_DEPENDENCIES = $(version_dep) libgfortran.spec $(LIBQUADLIB_DEP)
- cafexeclib_LTLIBRARIES = libcaf_single.la
+@@ -993,7 +993,7 @@ libgfortran_la_DEPENDENCIES = $(version_
+ libcaf_shared_DEPS = caf/libcaf.h caf/caf_error.h
+ libcaf_shared_SRCS = caf/caf_error.c
+ cafexeclib_LTLIBRARIES = libcaf_single.la $(am__append_2)
 -cafexeclibdir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)
 +cafexeclibdir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)$(MULTISUBDIR)
- libcaf_single_la_SOURCES = caf/single.c
+ libcaf_single_la_SOURCES = caf/single.c $(libcaf_shared_SRCS)
  libcaf_single_la_LDFLAGS = -static
- libcaf_single_la_DEPENDENCIES = caf/libcaf.h
- libcaf_single_la_LINK = $(LINK) $(libcaf_single_la_LDFLAGS)
+ libcaf_single_la_DEPENDENCIES = $(libcaf_shared_DEPS)
+@@ -1013,7 +1013,7 @@ libcaf_single_la_LINK = $(LINK) $(libcaf
+ @ENABLE_CAF_SHMEM_TRUE@	caf/shmem/teams_mgmt.h caf/shmem/thread_support.h
+ 
+ @ENABLE_CAF_SHMEM_TRUE@libcaf_shmem_la_LINK = $(LINK) $(libcaf_shmem_la_LDFLAGS) $(CAF_SHMEM_LIBS)
 -@IEEE_SUPPORT_TRUE@fincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)/finclude
 +@IEEE_SUPPORT_TRUE@fincludedir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)$(MULTISUBDIR)/finclude
  @IEEE_SUPPORT_TRUE@nodist_finclude_HEADERS = ieee_arithmetic.mod ieee_exceptions.mod ieee_features.mod
@@ -49,16 +52,17 @@
  
  LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS)) \
  	    $(lt_host_flags)
-@@ -59,14 +59,14 @@ libgfortran_la_LDFLAGS = -version-info `
- libgfortran_la_DEPENDENCIES = $(version_dep) libgfortran.spec $(LIBQUADLIB_DEP)
+@@ -62,7 +62,7 @@ libcaf_shared_DEPS = caf/libcaf.h caf/ca
+ libcaf_shared_SRCS = caf/caf_error.c
  
  cafexeclib_LTLIBRARIES = libcaf_single.la
 -cafexeclibdir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)
 +cafexeclibdir = $(libdir)/gcc-cross/$(target_alias)/$(gcc_version)$(MULTISUBDIR)
- libcaf_single_la_SOURCES = caf/single.c
+ libcaf_single_la_SOURCES = caf/single.c $(libcaf_shared_SRCS)
  libcaf_single_la_LDFLAGS = -static
- libcaf_single_la_DEPENDENCIES = caf/libcaf.h
- libcaf_single_la_LINK = $(LINK) $(libcaf_single_la_LDFLAGS)
+ libcaf_single_la_DEPENDENCIES = $(libcaf_shared_DEPS)
+@@ -87,7 +87,7 @@ libcaf_shmem_la_LINK = $(LINK) $(libcaf_
+ endif
  
  if IEEE_SUPPORT
 -fincludedir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)/finclude
@@ -68,7 +72,7 @@
  
 --- a/src/lto-plugin/Makefile.in
 +++ b/src/lto-plugin/Makefile.in
-@@ -343,7 +343,7 @@ with_libiberty = @with_libiberty@
+@@ -346,7 +346,7 @@ with_libiberty = @with_libiberty@
  ACLOCAL_AMFLAGS = -I .. -I ../config
  AUTOMAKE_OPTIONS = no-dependencies
  gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
@@ -90,7 +94,7 @@
  AM_CFLAGS = @ac_lto_plugin_warn_cflags@ $(CET_HOST_FLAGS) -DBASE_VERSION='"$(gcc_version)"'
 --- a/src/libitm/Makefile.in
 +++ b/src/libitm/Makefile.in
-@@ -458,7 +458,7 @@ SUBDIRS = testsuite
+@@ -461,7 +461,7 @@ SUBDIRS = testsuite
  gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
  abi_version = -fabi-version=4
  search_path = $(addprefix $(top_srcdir)/config/, $(config_path)) $(top_srcdir)
@@ -112,7 +116,7 @@
  
 --- a/src/gcc/gcc.cc
 +++ b/src/gcc/gcc.cc
-@@ -4970,7 +4970,7 @@ process_command (unsigned int decoded_op
+@@ -5112,7 +5112,7 @@ process_command (unsigned int decoded_op
  	 GCC_EXEC_PREFIX is typically a directory name with a trailing
  	 / (which is ignored by make_relative_prefix), so append a
  	 program name.  */
@@ -121,7 +125,7 @@
        gcc_libexec_prefix = get_relative_prefix (tmp_prefix,
  						standard_exec_prefix,
  						standard_libexec_prefix);
-@@ -4996,15 +4996,15 @@ process_command (unsigned int decoded_op
+@@ -5138,15 +5138,15 @@ process_command (unsigned int decoded_op
      {
        int len = strlen (gcc_exec_prefix);
  
@@ -143,7 +147,7 @@
        set_std_prefix (gcc_exec_prefix, len);
 --- a/src/gcc/Makefile.in
 +++ b/src/gcc/Makefile.in
-@@ -679,9 +679,9 @@ libexecdir = @libexecdir@
+@@ -682,9 +682,9 @@ libexecdir = @libexecdir@
  # --------
  
  # Directory in which the compiler finds libraries etc.
@@ -155,7 +159,7 @@
  # Directory in which all plugin resources are installed
  plugin_resourcesdir = $(libsubdir)/plugin
   # Directory in which plugin headers are installed
-@@ -2588,8 +2588,8 @@ default-rust.o: config/default-rust.cc
+@@ -2659,8 +2659,8 @@ default-rust.o: config/default-rust.cc
  
  DRIVER_DEFINES = \
    -DSTANDARD_STARTFILE_PREFIX=\"$(unlibsubdir)/\" \
@@ -166,7 +170,7 @@
    -DDEFAULT_TARGET_VERSION=\"$(version)\" \
    -DDEFAULT_REAL_TARGET_MACHINE=\"$(real_target_noncanonical)\" \
    -DDEFAULT_TARGET_MACHINE=\"$(target_noncanonical)\" \
-@@ -3372,7 +3372,7 @@ PREPROCESSOR_DEFINES = \
+@@ -3459,7 +3459,7 @@ PREPROCESSOR_DEFINES = \
    -DTOOL_INCLUDE_DIR=\"$(gcc_tooldir)/include\" \
    -DNATIVE_SYSTEM_HEADER_DIR=\"$(NATIVE_SYSTEM_HEADER_DIR)\" \
    -DPREFIX=\"$(prefix)/\" \
@@ -177,7 +181,7 @@
  CFLAGS-cppbuiltin.o += $(PREPROCESSOR_DEFINES) -DBASEVER=$(BASEVER_s)
 --- a/src/libssp/Makefile.in
 +++ b/src/libssp/Makefile.in
-@@ -366,7 +366,7 @@ gcc_version := $(shell @get_gcc_base_ver
+@@ -369,7 +369,7 @@ gcc_version := $(shell @get_gcc_base_ver
  @LIBSSP_USE_SYMVER_SUN_TRUE@@LIBSSP_USE_SYMVER_TRUE@version_dep = ssp.map-sun
  AM_CFLAGS = -Wall $(XCFLAGS)
  toolexeclib_LTLIBRARIES = libssp.la libssp_nonshared.la
@@ -199,7 +203,7 @@
  libssp_la_SOURCES = \
 --- a/src/libquadmath/Makefile.in
 +++ b/src/libquadmath/Makefile.in
-@@ -472,7 +472,7 @@ AUTOMAKE_OPTIONS = foreign info-in-build
+@@ -474,7 +474,7 @@ AUTOMAKE_OPTIONS = foreign info-in-build
  
  @BUILD_LIBQUADMATH_TRUE@libquadmath_la_DEPENDENCIES = $(version_dep) $(libquadmath_la_LIBADD)
  @BUILD_LIBQUADMATH_TRUE@nodist_libsubinclude_HEADERS = quadmath.h quadmath_weak.h
@@ -243,7 +247,7 @@
  # exeext should not be used because it's the *host* exeext.  We're building
 --- a/src/libgomp/Makefile.in
 +++ b/src/libgomp/Makefile.in
-@@ -517,8 +517,8 @@ gcc_version := $(shell @get_gcc_base_ver
+@@ -523,8 +523,8 @@ gcc_version := $(shell @get_gcc_base_ver
  search_path = $(addprefix $(top_srcdir)/config/, $(config_path)) $(top_srcdir) \
  	      $(top_srcdir)/../include
  
@@ -290,7 +294,7 @@
  toollibffi_HEADERS = ffi.h ffitarget.h
 --- a/src/libffi/include/Makefile.in
 +++ b/src/libffi/include/Makefile.in
-@@ -327,7 +327,7 @@ EXTRA_DIST = ffi.h.in
+@@ -330,7 +330,7 @@ EXTRA_DIST = ffi.h.in
  
  # Where generated headers like ffitarget.h get installed.
  gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
@@ -312,7 +316,7 @@
  if ENABLE_PLUGIN
 --- a/src/libcc1/Makefile.in
 +++ b/src/libcc1/Makefile.in
-@@ -396,7 +396,7 @@ libiberty = $(if $(wildcard $(libiberty_
+@@ -398,7 +398,7 @@ libiberty = $(if $(wildcard $(libiberty_
  	    $(Wc)$(libiberty_normal)))
  
  libiberty_dep = $(patsubst $(Wc)%,%,$(libiberty))
@@ -333,7 +337,7 @@
  
 --- a/src/libsanitizer/Makefile.in
 +++ b/src/libsanitizer/Makefile.in
-@@ -362,7 +362,7 @@ top_build_prefix = @top_build_prefix@
+@@ -365,7 +365,7 @@ top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
  ACLOCAL_AMFLAGS = -I .. -I ../config
@@ -344,8 +348,8 @@
  @SANITIZER_SUPPORTED_TRUE@	$(am__append_3) lsan asan ubsan \
 --- a/src/libphobos/configure.ac
 +++ b/src/libphobos/configure.ac
-@@ -261,6 +261,8 @@ AC_SUBST(SPEC_PHOBOS_DEPS)
- libtool_VERSION=6:0:0
+@@ -259,6 +259,8 @@ AC_SUBST(SPEC_PHOBOS_DEPS)
+ libtool_VERSION=7:0:0
  AC_SUBST(libtool_VERSION)
  
 +# trigger rebuild of the configure file
@@ -365,7 +369,7 @@
  
 --- a/src/gcc/ada/gcc-interface/Makefile.in
 +++ b/src/gcc/ada/gcc-interface/Makefile.in
-@@ -933,7 +933,7 @@ toolexeclibdir = $(ADA_RTL_OBJ_DIR)
+@@ -913,7 +913,7 @@ toolexeclibdir = $(ADA_RTL_OBJ_DIR)
  
  ADA_INCLUDE_DIR = $(libsubdir)/adainclude
  ADA_RTL_OBJ_DIR = $(libsubdir)/adalib
@@ -398,7 +402,7 @@
  
 --- a/src/libgm2/libm2cor/Makefile.in
 +++ b/src/libgm2/libm2cor/Makefile.in
-@@ -400,7 +400,7 @@ MAKEOVERRIDES =
+@@ -403,7 +403,7 @@ MAKEOVERRIDES =
  gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
  
  # Directory in which the compiler finds libraries etc.
@@ -420,7 +424,7 @@
  slibdir = $(libdir)/gcc/$(target_alias)/$(gcc_version)$(MULTISUBDIR)
 --- a/src/libgm2/libm2iso/Makefile.in
 +++ b/src/libgm2/libm2iso/Makefile.in
-@@ -426,7 +426,7 @@ MAKEOVERRIDES =
+@@ -430,7 +430,7 @@ MAKEOVERRIDES =
  gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
  
  # Directory in which the compiler finds libraries etc.
@@ -442,7 +446,7 @@
  
 --- a/src/libgm2/libm2log/Makefile.in
 +++ b/src/libgm2/libm2log/Makefile.in
-@@ -389,7 +389,7 @@ MAKEOVERRIDES =
+@@ -392,7 +392,7 @@ MAKEOVERRIDES =
  gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
  
  # Directory in which the compiler finds libraries etc.
@@ -464,7 +468,7 @@
  
 --- a/src/libgm2/libm2min/Makefile.in
 +++ b/src/libgm2/libm2min/Makefile.in
-@@ -379,7 +379,7 @@ MAKEOVERRIDES =
+@@ -382,7 +382,7 @@ MAKEOVERRIDES =
  gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
  
  # Directory in which the compiler finds libraries etc.
@@ -486,7 +490,7 @@
  
 --- a/src/libgm2/libm2pim/Makefile.in
 +++ b/src/libgm2/libm2pim/Makefile.in
-@@ -414,7 +414,7 @@ MAKEOVERRIDES =
+@@ -420,7 +420,7 @@ MAKEOVERRIDES =
  gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
  
  # Directory in which the compiler finds libraries etc.
@@ -495,3 +499,25 @@
  MULTIDIR := $(shell $(CC) $(CFLAGS) -print-multi-directory)
  MULTIOSDIR := $(shell $(CC) $(CFLAGS) -print-multi-os-directory)
  MULTIOSSUBDIR := $(shell if test x$(MULTIOSDIR) != x.; then echo /$(MULTIOSDIR); fi)
+--- a/src/libgcobol/Makefile.am
++++ b/src/libgcobol/Makefile.am
+@@ -41,7 +41,7 @@ if BUILD_LIBGCOBOL
+ toolexeclib_LTLIBRARIES  = libgcobol.la
+ toolexeclib_DATA = libgcobol.spec
+ 
+-libsubdir := $(libdir)/gcc/$(target_noncanonical)/$(version)$(MULTISUBDIR)/cobol
++libsubdir := $(libdir)/gcc-cross/$(target_noncanonical)/$(version)$(MULTISUBDIR)/cobol
+ libsubincludedir = $(libsubdir)
+ 
+ ##
+--- a/src/libgcobol/Makefile.in
++++ b/src/libgcobol/Makefile.in
+@@ -420,7 +420,7 @@ gcc_version := $(shell @get_gcc_base_ver
+ # Skip the whole process if we are not building libgcobol.
+ @BUILD_LIBGCOBOL_TRUE@toolexeclib_LTLIBRARIES = libgcobol.la
+ @BUILD_LIBGCOBOL_TRUE@toolexeclib_DATA = libgcobol.spec
+-@BUILD_LIBGCOBOL_TRUE@libsubdir := $(libdir)/gcc/$(target_noncanonical)/$(version)$(MULTISUBDIR)/cobol
++@BUILD_LIBGCOBOL_TRUE@libsubdir := $(libdir)/gcc-cross/$(target_noncanonical)/$(version)$(MULTISUBDIR)/cobol
+ @BUILD_LIBGCOBOL_TRUE@libsubincludedir = $(libsubdir)
+ @BUILD_LIBGCOBOL_TRUE@libgcobol_la_SOURCES = \
+ @BUILD_LIBGCOBOL_TRUE@	charmaps.cc				\

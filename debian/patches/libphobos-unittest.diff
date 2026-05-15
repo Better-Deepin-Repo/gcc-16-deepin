@@ -2,7 +2,7 @@
 
 --- a/src/libphobos/src/std/process.d
 +++ b/src/libphobos/src/std/process.d
-@@ -2835,7 +2835,7 @@ void kill(Pid pid, int codeOrSignal)
+@@ -2846,7 +2846,7 @@ void kill(Pid pid, int codeOrSignal)
      do { s = tryWait(pid); } while (!s.terminated);
      version (Windows)    assert(s.status == 123);
      else version (Posix) assert(s.status == -SIGKILL);

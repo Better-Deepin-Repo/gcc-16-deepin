@@ -66,8 +66,7 @@ ifeq (,$(wildcard debian/soname-cache))
 	v=`awk -F= '/^LIBGCOBOL_VERSION/ {split($$2,v,":"); print v[1]}' \
 		$(srcdir)/libgcobol/configure.ac`; \
 	echo GCOBOL_SONAME=$$v >> $$cache; \
-	v=`awk -F= '/^libga68_VERSION/ {split($$2,v,":"); print v[1]}' \
-		$(srcdir)/libga68/configure.ac`; \
+	v=`tail -1 $(srcdir)/libga68/libtool-version | cut -d: -f1`; \
 	echo GA68_SONAME=$$v >> $$cache; \
 	cat $$cache)
 else

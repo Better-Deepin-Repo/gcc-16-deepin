@@ -2,7 +2,7 @@
 
 --- a/src/configure.ac
 +++ b/src/configure.ac
-@@ -4289,6 +4289,7 @@ compare_exclusions="$compare_exclusions
+@@ -4409,6 +4409,7 @@ compare_exclusions="$compare_exclusions
  compare_exclusions="$compare_exclusions | gcc/cobol/parse\$(objext)"
  case "$target" in
    hppa*64*-*-hpux*) ;;

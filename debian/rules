@@ -52,7 +52,7 @@ build: pre-build control
 build-arch: pre-build control
 	$(MAKE) $(NJOBS) -f debian/rules2 $@
 build-indep: pre-build control
-	DEB_BUILD_OPTIONS="$(DEB_BUILD_OPTIONS) nostrap nohppa64 nonvptx nocheck nopgo nolto" \
+	DEB_BUILD_OPTIONS="$(DEB_BUILD_OPTIONS) nostrap nohppa64 nonvptx nogcn nocheck nopgo nolto" \
 	    $(MAKE) $(NJOBS) -f debian/rules2 $@
 
 check: $(check_stamp)

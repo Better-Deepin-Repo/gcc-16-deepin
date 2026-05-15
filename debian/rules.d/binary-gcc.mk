@@ -331,6 +331,14 @@ else
 	  > $(d_tst)/$(docdir)/$(p_xbase)/test-run-disabled
 endif
 
+ifneq (,$(wildcard usage-*.svg))
+	cp usage-*.svg $(d_tst)/$(docdir)/$(p_xbase)/.
+	-if which xz 2>&1 >/dev/null; then \
+	  echo -n $(d_tst)/$(docdir)/$(p_xbase)/*.svg \
+	    | xargs -d ' ' -L 1 -P $(USE_CPUS)	xz -9v; \
+	fi
+endif
+
 	debian/dh_rmemptydirs -p$(p_tst)
 
 	echo $(p_tst) >> debian/arch_binaries

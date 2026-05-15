@@ -59,9 +59,7 @@ gfdl_texinfo_files = \
 	gcc/doc/hostconfig.texi \
 	gcc/doc/implement-c.texi \
 	gcc/doc/implement-cxx.texi \
-	gcc/doc/install-old.texi \
 	gcc/doc/install.texi \
-	gcc/doc/interface.texi \
 	gcc/doc/invoke.texi \
 	gcc/doc/languages.texi \
 	gcc/doc/libgcc.texi \
@@ -73,6 +71,7 @@ gfdl_texinfo_files = \
 	gcc/doc/objc.texi \
 	gcc/doc/optinfo.texi \
 	gcc/doc/options.texi \
+	gcc/doc/params.texi \
 	gcc/doc/passes.texi \
 	gcc/doc/plugins.texi \
 	gcc/doc/poly-int.texi \
@@ -80,6 +79,7 @@ gfdl_texinfo_files = \
 	gcc/doc/rtl.texi \
 	gcc/doc/service.texi \
 	gcc/doc/sourcebuild.texi \
+	gcc/doc/specs.texi \
 	gcc/doc/standards.texi \
 	gcc/doc/tm.texi.in \
 	gcc/doc/tm.texi \
@@ -186,9 +186,7 @@ $(unpack_stamp)-$(newlib_tarball): $(newlib_tarpath) $(unpack_stamp)-$(gcc_tarba
 	mkdir -p $(stampdir)
 	: # rm -rf $(newlib_srcdir)
 	tar -x -f $(newlib_tarpath)
-	patch -p1 < debian/patches/newlib-pr119325.diff
-	patch -p1 < debian/patches/newlib-p2.diff
-	patch -p1 < debian/patches/newlib-p3.diff
+#	patch -p1 < debian/patches/newlib-XXX.diff
 	echo "$(newlib_tarball) unpacked." > $@
 endif
 

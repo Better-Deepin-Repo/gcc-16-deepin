@@ -128,6 +128,8 @@ libubsan.so.1 libubsan1 #MINVER#
  __ubsan_handle_invalid_objc_cast_abort@Base 11
  __ubsan_handle_load_invalid_value@Base 4.9
  __ubsan_handle_load_invalid_value_abort@Base 4.9
+ __ubsan_handle_local_out_of_bounds@Base 16
+ __ubsan_handle_local_out_of_bounds_abort@Base 16
  __ubsan_handle_missing_return@Base 4.9
  __ubsan_handle_mul_overflow@Base 4.9
  __ubsan_handle_mul_overflow_abort@Base 4.9

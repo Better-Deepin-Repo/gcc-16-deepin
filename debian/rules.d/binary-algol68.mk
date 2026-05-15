@@ -152,17 +152,17 @@ $(binary_stamp)-ga68: $(install_stamp)
 	rm -rf $(d_ga68)
 	dh_installdirs -p$(p_ga68) $(dirs_ga68)
 
-#	cp -p $(srcdir)/gcc/algol68/ChangeLog \
-#            $(d_ga68)/$(docdir)/$(p_xbase)/Algol68/changelog.algol68
+	cp -p $(srcdir)/gcc/algol68/ChangeLog \
+            $(d_ga68)/$(docdir)/$(p_xbase)/Algol68/changelog.algol68
+	cp -p $(srcdir)/libga68/ChangeLog \
+            $(d_ga68)/$(docdir)/$(p_xbase)/Algol68/changelog.libga68
 
 	debian/dh_doclink -p$(p_ga68) $(p_xbase)
 
 	ln -sf $(cmd_prefix)ga68$(pkg_ver) \
 	    $(d_ga68)/$(PF)/bin/ga68$(pkg_ver)
-ifneq ($(GFDL_INVARIANT_FREE),yes-now-pure-gfdl)
 	ln -sf $(cmd_prefix)ga68$(pkg_ver).1.gz \
 	    $(d_ga68)/$(PF)/share/man/man1/ga68$(pkg_ver).1.gz
-endif
 	debian/dh_rmemptydirs -p$(p_ga68)
 
 	echo $(p_ga68) >> debian/arch_binaries

@@ -3,7 +3,7 @@
 
 --- a/src/gcc/testsuite/gcc.dg/guality/guality.exp
 +++ b/src/gcc/testsuite/gcc.dg/guality/guality.exp
-@@ -99,7 +99,37 @@ if {[check_guality "
+@@ -106,7 +106,37 @@ if {[check_guality "
  	}
      }
  
@@ -40,5 +40,5 @@
 +
 +    gcc-dg-runtest $guality "" ""
      gcc-dg-runtest $general "" "-Wc++-compat"
-     set-torture-options \
- 	[list "-O0" "-Og"] \
+ 
+     if [check_effective_target_lto] {

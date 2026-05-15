@@ -108,10 +108,20 @@ define __do_gcc_devels2
 		else \
 		  mv $(4)/libgcc_s.so $(d)/$(3)/libgcc_s.so; \
 		fi; \
+		if [ -f $(4)/libgcc_s_asneeded.so ]; then \
+		  mv $(4)/libgcc_s_asneeded.so $(d)/$(3)/libgcc_s_asneeded.so; \
+		fi; \
+		if [ -f $(4)/libatomic_asneeded.so ]; then \
+		  mv $(4)/libatomic_asneeded.so $(d)/$(3)/libatomic_asneeded.so; \
+		fi; \
 	)
 	$(dh_compat2) dh_movefiles -p$(2) \
 		$(3)/{libgcc*,libgcov.a,*.o} \
 		$(if $(1),,$(gcc_lib_dir)/include/*.h $(gcc_lib_dir)/include/sanitizer/*.h) # Only move headers for the "main" package
+	if [ -f $(d)/$(3)/libatomic_asneeded.so ]; then \
+	  $(dh_compat2) dh_movefiles -p$(2) $(3)/libatomic_asneeded.so; \
+	fi
+
 	$(if $(1),, for h in ISO_Fortran_binding.h libgccjit.h libgccjit++.h libdiagnostics.h libdiagnostics++.h; do \
 	  if [ -f debian/$(2)/$(gcc_lib_dir)/include/$$h ]; then \
 	    mv debian/$(2)/$(gcc_lib_dir)/include/$$h $(d)/$(gcc_lib_dir)/include/.; \

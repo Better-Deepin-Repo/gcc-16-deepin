@@ -5,12 +5,12 @@ Subject: [PATCH] Disable fold-mem-offsets, only applied for m68k
 
 --- a/src/gcc/doc/invoke.texi
 +++ b/src/gcc/doc/invoke.texi
-@@ -15844,6 +15844,8 @@ Try to eliminate add instructions by fol
+@@ -16154,6 +16154,8 @@ Try to eliminate add instructions by fol
  
  Enabled at levels @option{-O2}, @option{-O3}.
  
 +NOTE: On Debian/Ubuntu this is disabled by default on m68k-linux-gnu.
 +
  @opindex fcprop-registers
+ @opindex fno-cprop-registers
  @item -fcprop-registers
- After register allocation and post-register allocation instruction splitting,

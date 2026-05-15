@@ -106,6 +106,15 @@ NJOBS :=
 USE_CPUS := 1
 ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
   USE_CPUS := $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
+  ifeq ($(derivative),Ubuntu)
+    # builds without build log ...
+    ifneq (,$(filter $(DEB_HOST_ARCH), riscv64))
+      MEM_PER_CPU=6000
+      USE_CPUS := $(shell mt=`awk '/^(MemAvail|SwapFree)/ { mt += $$2 } END {print mt}' /proc/meminfo`; \
+			awk -vn=$(USE_CPUS) -vmt=$$mt -vm=$(MEM_PER_CPU) \
+			'END { mt/=1024; n2 = int(mt/m); print n==1 || n2<=1 ? 1 : n2<=n ? n2 : n }' < /dev/null)
+    endif
+  endif
   NJOBS := -j $(USE_CPUS)
   NJOBS_TESTS := -j $(USE_CPUS)
   # this is for debugging hanging tests on the buildds
@@ -212,6 +221,7 @@ ifeq (,$(ELF_PACKAGE_METADATA))
 	"name":"$(PKGSOURCE)", \
 	"version":"$(DEB_VERSION)", \
 	"architecture":"$(DEB_HOST_ARCH)" \
+	$(if $(DEB_HOST_ARCH_VARIANT),$(COMMA)"architectureVariant":"$(DEB_HOST_ARCH_VARIANT)") \
 	$(if $(DEB_BUILD_DEBUG_INFO_URL),$(COMMA)"debugInfoUrl":"$(DEB_BUILD_DEBUG_INFO_URL)") \
     })
   export ELF_PACKAGE_METADATA
@@ -372,7 +382,7 @@ ifneq ($(trunk_build),yes)
   ifeq ($(build_type),build-native)
     ifeq (,$(DEB_STAGE))
       ifeq (,$(filter $(distrelease), jessie stretch precise trusty xenial bionic))
-        ifneq (,$(filter $(DEB_HOST_ARCH), amd64 i386 armhf arm64 powerpc ppc64 ppc64el s390x sparc64))
+        ifneq (,$(filter $(DEB_HOST_ARCH), amd64 armhf arm64 ppc64 ppc64el s390x sparc64))
           with_bootstrap := profiled
         endif
         # PR target/121821, PR target/122815
@@ -400,6 +410,9 @@ ifneq ($(trunk_build),yes)
   endif
   # Slow builders in Debian
   ifeq ($(distribution)-$(DEB_HOST_ARCH),Debian-riscv64)
+    with_lto_build :=
+  endif
+  ifeq ($(distribution)-$(DEB_HOST_ARCH),Ubuntu-riscv64)
     with_lto_build :=
   endif
 
@@ -440,14 +453,14 @@ ifeq ($(build_type),build-native)
   ifeq ($(derivative),Ubuntu)
     no_usage_archs = i386
   else ifeq ($(derivative),Debian)
-    no_usage_archs = alpha hppa ia64 m68k mipsel mips64el sh4 sparc64 x32 \
+    no_usage_archs = alpha hppa m68k mipsel mips64el sh4 x32 \
 	hurd-amd64 hurd-i386
   endif
   ifneq (,$(filter $(DEB_HOST_ARCH),$(no_usage_archs)))
     usage_stats =
   endif
 endif
-usage_stats = disabled for release builds
+#usage_stats = disabled for release builds
 
 # -------------------------------------------------------------------
 # stage options
@@ -596,7 +609,7 @@ ppc64el_ibm128_distreleases = jessie stretch buster bullseye bookworm trixie \
 
 # allows to write backtraces for ICEs
 #unstripped_exe = yes
-ifneq (,$(filter $(DEB_TARGET_ARCH), amd64 armhf arm64 i386 ppc64el riscv64 s390x))
+ifneq (,$(filter $(DEB_TARGET_ARCH), alpha amd64 armhf arm64 i386 loong64 ppc64el riscv64 s390x sparc64))
   unstripped_exe = yes
 endif
 
@@ -884,7 +897,7 @@ else
   gcn_tools_llvm_version = tools
 endif
 ifeq ($(gcn_tools_llvm_version),tools)
-  ifneq (,$(filter $(distrelease), bookworm trixie xenial bionic focal jammy noble oracular plucky questing))
+  ifneq (,$(filter $(distrelease), bookworm trixie xenial bionic focal))
     AMDGCN_TOOLS_DEP = amdgcn-tools-19 [$(gcn_archs)],
   else
     AMDGCN_TOOLS_DEP = amdgcn-tools-21 [$(gcn_archs)],
@@ -901,6 +914,7 @@ endif
 ifneq (,$(filter $(distrelease), precise bionic focal))
   offload_targets := $(filter-out $(gcn_target_name), $(offload_targets))
   with_offload_gcn :=
+  AMDGCN_TOOLS_DEP =
 endif
 ifneq (,$(findstring build-cross, $(build_type)))
   offload_targets := $(filter-out $(gcn_target_name), $(offload_targets))
@@ -955,11 +969,6 @@ ada_no_snap	:= no
 #ifeq ($(single_package),yes)
 #  ifneq (,$(filter $(DEB_TARGET_ARCH),alpha))
 #    ada_no_snap := yes
-#  endif
-#endif
-#ifeq ($(DEB_CROSS),yes)
-#  ifneq (,$(filter $(DEB_TARGET_ARCH),alpha))
-#    ada_no_cross := yes
 #  endif
 #endif
 
@@ -1304,9 +1313,9 @@ ifeq ($(with_m2),yes)
   ifeq ($(with_dev),yes)
     with_m2dev := yes
   endif
-  ifeq ($(with_common_libs),yes)
+  #ifeq ($(with_common_libs),yes)
     with_libgm2 := yes
-  endif
+  #endif
   enabled_languages += m2
 endif
 
@@ -1353,8 +1362,8 @@ ifeq ($(with_rs),yes)
 endif
 
 # COBOL -------------------
-cobol_no_cross := yes
-cobol_no_cross := no
+# requires a libxml2 for the target
+#cobol_no_cross := yes
 
 ifneq ($(with_base_only),yes)
   ifneq ($(separate_lang),yes)
@@ -1382,7 +1391,8 @@ endif
 ifeq ($(DEB_STAGE)-$(filter libgcobol, $(with_rtlibs)),rtlibs-)
   with_cobol := disabled for rtlibs stage
 endif
-ifneq (,$(filter $(distrelease),precise))
+ifneq (,$(filter $(distrelease),precise trusty xenial bionic))
+  # requires bison 3.5.1 or 3.8.2
   with_cobol := disabled for $(distrelease) backport
 endif
 #with_cobol := disabled for GCC 16
@@ -1529,7 +1539,7 @@ endif
 # lsan / sanitizer --------------------
 with_lsan :=
 with_lsan := $(call envfilt, lsan, , , $(with_lsan))
-lsan_archs = arm64 amd64 loong64 ppc64 ppc64el riscv64
+lsan_archs = arm64 amd64 loong64 ppc64 ppc64el riscv64 s390x
 ifneq (,$(filter $(DEB_TARGET_ARCH),$(lsan_archs)))
   with_lsan := yes
 endif
@@ -1537,7 +1547,7 @@ endif
 # tsan / sanitizer --------------------
 with_tsan :=
 with_tsan := $(call envfilt, tsan, , , $(with_tsan))
-tsan_archs = arm64 amd64 loong64 ppc64 ppc64el riscv64
+tsan_archs = arm64 amd64 loong64 ppc64 ppc64el riscv64 s390x
 ifneq (,$(filter $(DEB_TARGET_ARCH),$(tsan_archs)))
   with_tsan := yes
 endif
@@ -1622,6 +1632,9 @@ endif # ifeq (,$(filter $(DEB_STAGE),stage1 stage2))
 
 # Don't include docs with GFDL invariant sections
 GFDL_INVARIANT_FREE := yes
+ifneq (,$(findstring gcc-snapshot, $(PKGSOURCE)))
+  GFDL_INVARIANT_FREE := no
+endif
 ifeq ($(derivative),Ubuntu)
   GFDL_INVARIANT_FREE := no
 endif
@@ -1838,7 +1851,7 @@ endif
 ifeq ($(distribution)-$(DEB_HOST_ARCH),Ubuntu-riscv64)
   with_check := disabled for $(DEB_HOST_ARCH) on Ubuntu, qemu builders
 endif
-with_check := disabled for this upload
+#with_check := disabled for this upload
 
 # not a dependency on all archs, but if available, use it for the testsuite
 ifneq (,$(wildcard /usr/bin/localedef))
@@ -2006,6 +2019,10 @@ endef
 biarch32archs := /amd64/ppc64/s390x/sparc64/x32/mipsn32/mipsn32el/mips64/mips64el/
 ifeq ($(derivative),Ubuntu)
   ifeq (,$(filter $(distrelease),trusty xenial bionic focal jammy mantic noble))
+    biarch32archs := $(subst s390x/,,$(biarch32archs))
+  endif
+else ifeq ($(derivative),Debian)
+  ifeq (,$(filter $(distrelease),stretch buster bullseye bookworm trixie))
     biarch32archs := $(subst s390x/,,$(biarch32archs))
   endif
 endif

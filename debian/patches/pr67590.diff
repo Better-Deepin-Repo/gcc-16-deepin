@@ -2,7 +2,7 @@
 
 --- a/src/libcc1/configure.ac
 +++ b/src/libcc1/configure.ac
-@@ -74,6 +74,31 @@ if test "$GXX" = yes; then
+@@ -75,6 +75,31 @@ if test "$GXX" = yes; then
  fi
  AC_SUBST(libsuffix)
  

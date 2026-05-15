@@ -6,10 +6,9 @@ the same source package, or built from a separate same source package.
 Packaging is done by the Debian GCC Maintainers
 <debian-gcc@lists.debian.org>, with sources obtained from:
 
-  ftp://gcc.gnu.org/pub/gcc/releases/  (for full releases)
-  svn://gcc.gnu.org/svn/gcc/           (for prereleases)
-  ftp://sourceware.org/pub/newlib/     (for newlib)
-  git://git.savannah.gnu.org/gm2.git   (for Modula-2)
+  ftp://gcc.gnu.org/pub/gcc/releases/            (for full releases)
+  https://gcc.gnu.org/git/gitweb.cgi?p=gcc.git   (for prereleases)
+  ftp://sourceware.org/pub/newlib/               (for newlib)
 
 The current gcc-16 source package is taken from the git gcc-16-branch.
 
@@ -684,7 +683,7 @@ Under Section 7 of GPL version 3, you are granted additional
 permissions described in the GCC Runtime Library Exception, version
 3.1, as published by the Free Software Foundation.
 
-newlib-X.Y.Z/:
+newlib-X.Y.Z/ (only for the offload compilers):
 
 Upstream Authors:
 newlib@sources.redhat.com
@@ -1260,10 +1259,8 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-   02110-1301 USA
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see https://www.gnu.org/licenses/.
 
 (22) Xavier Leroy LGPL License (i[3456]86-*-linux* targets only)
 

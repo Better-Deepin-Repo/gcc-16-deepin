@@ -2,7 +2,7 @@
 
 --- a/src/libgo/configure.ac
 +++ b/src/libgo/configure.ac
-@@ -802,6 +802,14 @@ main ()
+@@ -811,6 +811,14 @@ main ()
  CFLAGS="$CFLAGS_hold"
  LIBS="$LIBS_hold"
  ])

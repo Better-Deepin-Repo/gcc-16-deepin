@@ -13,11 +13,13 @@ series_file	?= $(patchdir)/series
 # which patches should be applied?
 
 debian_patches += \
+	git-updates \
 
 #	git-updates \
 
 ifneq ($(GFDL_INVARIANT_FREE),yes)
   debian_patches += \
+	git-doc-updates \
 	rename-info-files \
 
 #	git-doc-updates \
@@ -65,10 +67,8 @@ debian_patches += \
 	gcc-arm-disable-guality-tests \
 	musl-ssp \
 	arc-stddef \
-	pr107475 \
 	gccrs-bootstrap-mipsel \
-	libphobos-ppc64el \
-	libphobos-soname \
+	libsanitizer-static-tls \
 
 # see https://bugs.debian.org/1108322
 ifneq (,$(filter $(DEB_TARGET_ARCH),hppa m68k powerpc))
@@ -323,6 +323,7 @@ $(patch_stamp): $(unpack_stamp) $(series_stamp)
 	  sh -c 'echo "Running autoconf$(autoconf_version) in {}..." ; \
 	  cd $(CURDIR)/{} && rm -f configure && \
 	  AUTOM4TE=/usr/bin/autom4te$(autoconf_version) autoconf$(autoconf_version)'
+	find $(srcdir) -name autom4te.cache | xargs -r rm -rf
 
 	for i in $(debian_patches) $(hardening_patches); do \
 	  echo -e "\n$$i:" >> pxxx; \
