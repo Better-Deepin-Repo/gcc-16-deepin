@@ -21,6 +21,7 @@ Tests: libgm2-link
 Depends: gm2-16
 
 Tests: libgnat-link
+Architecture: !loong64
 Depends: gnat-16
 
 Tests: libgcobol-link
@@ -32,7 +33,7 @@ Depends: ga68-16
 
 Tests: libgphobos-link
 Depends: gdc-16
-Architecture: !powerpc !ppc64 !ppc64el
+Architecture: !loong64 !powerpc !ppc64 !ppc64el
 
 Tests: shlib-build
 Depends: gcc-16, libc6-dev | libc-dev
